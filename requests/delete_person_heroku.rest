@@ -1,0 +1,1 @@
+DELETE https://fs-puhelinluettelo-17412.herokuapp.com/api/persons/4

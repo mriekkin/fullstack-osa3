@@ -1,0 +1,7 @@
+POST https://fs-puhelinluettelo-17412.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+  "name": "Mikko Mallikas",
+  "number": "050-123456"
+}

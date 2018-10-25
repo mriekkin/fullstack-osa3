@@ -14,29 +14,6 @@ app.use(bodyParser.json())
 morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :body :status :res[content-length] - :response-time ms'))
 
-let persons = [
-  {
-    name: "Arto Hellas",
-    number: "040-123456",
-    id: 1
-  },
-  {
-    name: "Martti Tienari",
-    number: "040-123456",
-    id: 2
-  },
-  {
-    name: "Arto Järvinen",
-    number: "040-123456",
-    id: 3
-  },
-  {
-    name: "Lea Kutvonen",
-    number: "040-123456",
-    id: 4
-  }
-]
-
 app.get('/info', (request, response) => {
   Person
     .find({})
@@ -95,10 +72,6 @@ app.delete('/api/persons/:id', (request, response) => {
     })
 })
 
-function findName(name) {
-  return persons.find(p => p.name === name)
-}
-
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
@@ -110,19 +83,29 @@ app.post('/api/persons', (request, response) => {
     return response.status(400).json({ error: 'number missing' })
   }
 
-  if (findName(body.name) !== undefined) {
-    return response.status(400).json({ error: 'name must be unique' })
-  }
+  Person
+    .find({ name: body.name })
+    .then(result => {
+      if (result.length !== 0) {
+        return response.status(400).json({ error: 'name must be unique' })
+      }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
+      const person = new Person({
+        name: body.name,
+        number: body.number
+      })
 
-  person
-    .save()
-    .then(savedPerson => {
-      response.json(Person.format(savedPerson))
+      person
+        .save()
+        .then(savedPerson => {
+          response.json(Person.format(savedPerson))
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    })
+    .catch(error => {
+      console.log(error)
     })
 })
 

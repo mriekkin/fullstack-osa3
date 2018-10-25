@@ -26,7 +26,7 @@ app.get('/info', (request, response) => {
         <div>
           ${new Date()}
         </div>`
-        )
+      )
     })
     .catch(error => {
       console.log(error)
